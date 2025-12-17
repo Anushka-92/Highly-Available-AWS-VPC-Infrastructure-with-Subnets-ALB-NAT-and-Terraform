@@ -60,7 +60,7 @@ Laptop → Bastion Host → Private Subnets
 
 ---
 
-## 🧱 Network Design
+##  Network Design
 
 | Component      | CIDR        | AZ              |
 | -------------- | ----------- | --------------- |
@@ -82,7 +82,7 @@ Laptop → Bastion Host → Private Subnets
 
 ---
 
-## ⚙️ Auto Scaling Group (Web Tier)
+##  Auto Scaling Group (Web Tier)
 
 ### Why Auto Scaling?
 
@@ -108,7 +108,7 @@ Laptop → Bastion Host → Private Subnets
 
 ---
 
-## 🧪 Testing Scenarios
+##  Testing Scenarios
 
 * Stop one EC2 → traffic continues via ALB
 * Increase CPU load → ASG launches new instance
@@ -117,7 +117,7 @@ Laptop → Bastion Host → Private Subnets
 
 ---
 
-## 🧹 Cleanup
+##  Cleanup
 
 ```bash
 terraform destroy
