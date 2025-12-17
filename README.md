@@ -1,14 +1,6 @@
 # Highly Available AWS VPC Infrastructure with Terraform
 
-## 📌 Project Overview
-
-This project demonstrates a **production-grade AWS infrastructure** designed using best practices for **high availability, security, and scalability**. The infrastructure is provisioned using **Terraform (Infrastructure as Code)** and follows a **public–private subnet architecture** across multiple Availability Zones.
-
-The project simulates a real-world web application deployment with a scalable web tier and a secured private database tier.
-
----
-
-## 🏗️ Architecture Overview
+## Architecture Overview
 
 **Key Components:**
 
@@ -108,84 +100,6 @@ Laptop → Bastion Host → Private Subnets
 
 ---
 
-## 🚀 Terraform – Auto Scaling Group Configuration
-
-### Launch Template
-
-```hcl
-resource "aws_launch_template" "web_lt" {
-  name_prefix   = "web-lt"
-  image_id      = "ami-xxxxxxxx"   # Amazon Linux 2
-  instance_type = "t2.micro"
-
-  user_data = base64encode(<<EOF
-#!/bin/bash
-yum update -y
-yum install httpd -y
-echo "Hello from Auto Scaling Instance" > /var/www/html/index.html
-systemctl start httpd
-systemctl enable httpd
-EOF
-  )
-
-  network_interfaces {
-    security_groups = [aws_security_group.web_sg.id]
-    associate_public_ip_address = true
-  }
-}
-```
-
----
-
-### Auto Scaling Group
-
-```hcl
-resource "aws_autoscaling_group" "web_asg" {
-  desired_capacity = 2
-  max_size         = 4
-  min_size         = 1
-
-  vpc_zone_identifier = [
-    aws_subnet.public_1.id,
-    aws_subnet.public_2.id
-  ]
-
-  launch_template {
-    id      = aws_launch_template.web_lt.id
-    version = "$Latest"
-  }
-
-  target_group_arns = [aws_lb_target_group.web_tg.arn]
-
-  tag {
-    key                 = "Name"
-    value               = "ASG-WebServer"
-    propagate_at_launch = true
-  }
-}
-```
-
----
-
-### Scaling Policy
-
-```hcl
-resource "aws_autoscaling_policy" "cpu_scale_out" {
-  name                   = "cpu-scale-out"
-  autoscaling_group_name = aws_autoscaling_group.web_asg.name
-  policy_type            = "TargetTrackingScaling"
-
-  target_tracking_configuration {
-    predefined_metric_specification {
-      predefined_metric_type = "ASGAverageCPUUtilization"
-    }
-    target_value = 60.0
-  }
-}
-```
-
----
-
 ## 📊 Monitoring & Logging
 
 * EC2 Detailed Monitoring enabled
@@ -213,7 +127,7 @@ terraform destroy
 ## 📌 Future Enhancements
 
 * I can replace EC2 DB with Amazon RDS (Multi-AZ)
-* Add HTTPS using ACM
+* I can add HTTPS using ACM
 * CI/CD pipeline using GitHub Actions
 * Convert Terraform into reusable modules
 
